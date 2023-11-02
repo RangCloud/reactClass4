@@ -1,70 +1,76 @@
 import './App.css';
 import React, {useState} from 'react';
+import {createStore} from 'redux';
+import {provider, useSelector, useDispatch, connect} from 'react-redux';
+
+function reducer(currentState, action){
+  if(currentState === undefined){
+    return{number:1};
+  }
+  const newState = {...currentState};
+  return newState
+}
+
+const store = createStore(reducer);
 
 function Left(props){
   return(
     <div>
-      <h1>Left1: {props.number}</h1>
-      <Left2 number={props.number}/>
+      <h1>Left1</h1>
+      <Left2/>
     </div>
   )
 }
 function Left2(props){
   return(
     <div>
-      <h1>Left2: {props.number}</h1>
-      <Left3 number = {props.number}/>
+      <h1>Left2</h1>
+      <Left3/>
     </div>
   )
 }
 function Left3(props){
   return(
     <div>
-      <h1>Left3: {props.number}</h1>
+      <h1>Left3</h1>
     </div>
   )
 }
 function Right(props){
   return(
     <div>
-      <h1>Right1: {props.number}</h1>
-      <Right2 onIncrese={
-        ()=>{props.onIncrese();}
-      }/>
+      <h1>Right1</h1>
+      <Right2/>
     </div>
   )
 }
 function Right2(props){
   return(
     <div>
-      <h1>Right2: {props.number}</h1>
-      <Right3 onIncrese={
-        ()=>{props.onIncrese();}
-      }/>
+      <h1>Right2</h1>
+      <Right3/>
     </div>
   )
 }
 function Right3(props){
   return(
     <div>
-      <h1>Right3: {props.number}</h1>
+      <h1>Right3</h1>
       <input type='button' value='+' onClick={
-        ()=>{props.onIncrese();}
+        ()=>{}
       }/>
     </div>
   )
 }
 
 function App() {
-  const [number, setNumber] = useState(1);
+  // const [number, setNumber] = useState(1);
   return (
     <div id='container'>
-      <h1>Root: {number}</h1>
+      <h1>Root</h1>
       <div id='gird'>
-        <Left number={number}/>
-        <Right onIncrese={
-        ()=>{setNumber(number+1)}
-      }/>
+        <Left/>
+        <Right/>
       </div>
     </div>
   );
