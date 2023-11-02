@@ -1,14 +1,16 @@
 import './App.css';
 import React, {useState} from 'react';
 import {createStore} from 'redux';
-import {provider, useSelector, useDispatch, connect} from 'react-redux';
+import {Provider, useSelector, useDispatch, connect} from 'react-redux';
 
 function reducer(currentState, action){
   if(currentState === undefined){
     return{number:1};
   }
   const newState = {...currentState};
-  return newState
+
+  if(action.type === 'PLUS'){newState.number++;}
+  return newState;
 }
 
 const store = createStore(reducer);
@@ -30,9 +32,13 @@ function Left2(props){
   )
 }
 function Left3(props){
+  // function f(state){return state.number};
+  // const number = useSelector(f);
+  const number = useSelector((state=>state.number));
+
   return(
     <div>
-      <h1>Left3</h1>
+      <h1>Left3: {number}</h1>
     </div>
   )
 }
@@ -53,11 +59,12 @@ function Right2(props){
   )
 }
 function Right3(props){
+  const dispatch = useDispatch();
   return(
     <div>
       <h1>Right3</h1>
       <input type='button' value='+' onClick={
-        ()=>{}
+        ()=>{dispatch({type:'PLUS'}) }
       }/>
     </div>
   )
@@ -69,8 +76,10 @@ function App() {
     <div id='container'>
       <h1>Root</h1>
       <div id='gird'>
-        <Left/>
-        <Right/>
+        <Provider store={store}>
+          <Left/>
+          <Right/>
+        </Provider>
       </div>
     </div>
   );
