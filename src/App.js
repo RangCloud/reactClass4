@@ -1,50 +1,116 @@
-import React, {createContext, useContext} from "react";
-import "./style_context_api.css";
+import React, {createContext, useState} from "react";
 
-const myGlobalStyle = {border: '10px dashed red'}
-const themeDefault = {border: '10px solid green'};
-const themeContext = createContext(themeDefault);
+const ColorContext = createContext({
+    state: {color: 'black', subcolor: 'red'},
+    actions:{
+        setColor: ()=>{
+        },
+        setSubcolor: ()=>{
 
-function Sub1(){
-  const theme = useContext(themeContext);
-  return(
-    <themeContext.Provider value={{border: '10px dashed blue'}}>
-      <div style={theme}>
-        <h1>sub1</h1>
-        <Sub2/>
-      </div>
-    </themeContext.Provider>
-  )
-}
-function Sub2(){
-  const theme = useContext(themeContext);
-  return(
-    <div style={myGlobalStyle}>
-      <h1>sub2</h1>
-      <Sub3/>
-    </div>
-  )
-}
-function Sub3(){
-  const theme = useContext(themeContext);
-  return(
-    <div style={theme}>
-      <h1>sub3</h1>
-    </div>
-  )
+        }
+    }
+});
+
+const ColorProvider = ({children}) =>{
+    const [color, setColor] = useState('black');
+    const [subcolor, setSubcolor] = useState('red');
+
+    const value = {
+        state: {color, subcolor},
+        actions:{
+            setColor, setSubcolor
+        }
+    }
+    return( <ColorContext.Provider value={value}>{children}</ColorContext.Provider>)
+};
+const {Consumer: ColorConsumer} = ColorContext;
+
+const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+const SelectColors = ()=>{
+    return(
+        <div>
+            <h2> 색상을 선택하세요 </h2>
+            <ColorConsumer>
+            {
+                ({actions})=>{
+                    <div style={{display:'flex'}}>
+                {
+                    colors.map(color=>(
+                        <div
+                        key = {color} style={{
+                            background:color, width:'24px', height:'24px', cursor:'pointer'
+                        }}
+                        // left click
+                        onClick={()=>{actions.setColor(color)}}
+                        // right click
+                        onContextMenu={
+                            e=>{
+                                e.preventDefault();
+                                actions.setSubcolor(color);
+                            }
+                        }
+                        />
+                    ))
+                }
+            </div>
+                }
+            }
+            </ColorConsumer>
+            {/* <div style={{display:'flex'}}>
+                {
+                    colors.map(color=>(
+                        <div
+                        key = {color} style={{
+                            background:color, width:'24px', height:'24px', cursor:'pointer'
+                        }}
+                        />
+                    ))
+                }
+            </div> */}
+        </div>
+    )
 }
 
-function App(){
-  const theme = useContext(themeContext);
-  console.log(theme);
-  return(
-    <themeContext.Provider value={{border: '10px solid yellow'}}>
-      <div style={theme} className="root">
-        <h1>hello</h1>
-        <Sub1/>
-      </div>
-    </themeContext.Provider>
-  )
+const ColorBox = ()=>{
+    return(
+        <ColorConsumer>
+        {
+            value => (
+                <>
+                    <div style={
+                        {width:'64px', height:'64px', background: value.state.color}
+                    }/>
+                    <div style={
+                        {width:'32px', height:'32px', background: value.state.subcolor}
+                    }/>
+                </>
+            )
+        }
+        </ColorConsumer>
+        //{<ColorContext.Consumer>
+        //{
+        //    value=>(
+        //        <div style={{
+        //            width:'64px',
+        //            height:'64px',
+        //            background: value.color
+        //        }}/>
+        //    )
+        //}
+        //</ColorContext.Consumer> */}
+    );
+}
+const App = ()=>{
+    return(
+        //<ColorContext.Provider value={{color:'red'}}>
+        <ColorProvider>
+            <div>
+                <SelectColors/>
+                <ColorBox />
+            </div>
+        </ColorProvider>
+        //</ColorContext.Provider>
+    )
 }
 
 export default App;
