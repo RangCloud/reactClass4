@@ -1,88 +1,54 @@
-import './App.css';
-import React, {useState} from 'react';
-import {createStore} from 'redux';
-import {Provider, useSelector, useDispatch, connect} from 'react-redux';
+import React from "react";
+import {Provider, useSelector, useDispatch} from 'react-redux';
+import {createSlice, configureStore} from '@reduxjs/toolkit';
 
-function reducer(currentState, action){
-  if(currentState === undefined){
-    return{number:1};
+const counterSlice = createSlice({
+    name: 'counterSlice',
+    initialState: {value: 0},
+    reducers: {
+      up:(state, action)=>{
+        state.value = state.value + action.step;
+      }
+    }
+});
+const store = configureStore(
+  {
+    reducer:{
+      counter : counterSlice.reducer
+    }
   }
-  const newState = {...currentState};
+);
 
-  if(action.type === 'PLUS'){newState.number++;}
-  return newState;
-}
-
-const store = createStore(reducer);
-
-function Left(props){
-  return(
-    <div>
-      <h1>Left1</h1>
-      <Left2/>
-    </div>
-  )
-}
-function Left2(props){
-  return(
-    <div>
-      <h1>Left2</h1>
-      <Left3/>
-    </div>
-  )
-}
-function Left3(props){
-  // function f(state){return state.number};
-  // const number = useSelector(f);
-  const number = useSelector((state=>state.number));
-
-  return(
-    <div>
-      <h1>Left3: {number}</h1>
-    </div>
-  )
-}
-function Right(props){
-  return(
-    <div>
-      <h1>Right1</h1>
-      <Right2/>
-    </div>
-  )
-}
-function Right2(props){
-  return(
-    <div>
-      <h1>Right2</h1>
-      <Right3/>
-    </div>
-  )
-}
-function Right3(props){
+function Counter(){
   const dispatch = useDispatch();
+  const count = useSelector(
+    (state)=>{console.log(state); return state.counter.value;}
+  );
   return(
     <div>
-      <h1>Right3</h1>
-      <input type='button' value='+' onClick={
-        ()=>{dispatch({type:'PLUS'}) }
-      }/>
-    </div>
-  )
-}
-
-function App() {
-  // const [number, setNumber] = useState(1);
-  return (
-    <div id='container'>
-      <h1>Root</h1>
-      <div id='gird'>
-        <Provider store={store}>
-          <Left/>
-          <Right/>
-        </Provider>
+      <div>
+        {count}
+      </div>
+      <div>
+        <button onClick={
+          ()=>{ 
+            dispatch({type:'counterSlice/up', step:2});
+            //dispatch(counterSlice.action.up({step:2}));
+          }
+        }>+</button>
       </div>
     </div>
-  );
+  )
+}
+
+function App(){
+  return(
+    <div>
+      <Provider store = {store}>
+        <Counter/>
+      </Provider>
+    </div>
+  )
 }
 
 export default App;
