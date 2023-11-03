@@ -1,4 +1,4 @@
-import React, {createContext, useState} from "react";
+import React, {createContext, useState, useContext} from "react";
 
 const ColorContext = createContext({
     state: {color: 'black', subcolor: 'red'},
@@ -17,9 +17,7 @@ const ColorProvider = ({children}) =>{
 
     const value = {
         state: {color, subcolor},
-        actions:{
-            setColor, setSubcolor
-        }
+        actions:{setColor, setSubcolor}
     }
     return( <ColorContext.Provider value={value}>{children}</ColorContext.Provider>)
 };
@@ -32,7 +30,7 @@ const SelectColors = ()=>{
             <h2> 색상을 선택하세요 </h2>
             <ColorConsumer>
             {
-                ({actions})=>{
+                ({actions})=>(
                     <div style={{display:'flex'}}>
                 {
                     colors.map(color=>(
@@ -53,7 +51,7 @@ const SelectColors = ()=>{
                     ))
                 }
             </div>
-                }
+                )
             }
             </ColorConsumer>
             {/* <div style={{display:'flex'}}>
@@ -68,6 +66,20 @@ const SelectColors = ()=>{
                 }
             </div> */}
         </div>
+    )
+}
+
+const ColorBoxUseContext = ()=>{
+    const {state} = useContext(ColorContext);
+    return(
+                <>
+                    <div style={
+                        {width:'64px', height:'64px', background: state.color}
+                    }/>
+                    <div style={
+                        {width:'32px', height:'32px', background: state.subcolor}
+                    }/>
+                </>
     )
 }
 
@@ -106,7 +118,8 @@ const App = ()=>{
         <ColorProvider>
             <div>
                 <SelectColors/>
-                <ColorBox />
+                {/* <ColorBox /> */}
+                <ColorBoxUseContext/>
             </div>
         </ColorProvider>
         //</ColorContext.Provider>
