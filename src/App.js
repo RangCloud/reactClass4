@@ -2,6 +2,8 @@ import React from "react";
 import {Provider, useSelector, useDispatch} from 'react-redux';
 import {createSlice, configureStore} from '@reduxjs/toolkit';
 
+
+//reducer toolkit
 const counterSlice = createSlice({
     name: 'counterSlice',
     initialState: {value: 0},
